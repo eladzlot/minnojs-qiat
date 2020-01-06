@@ -1,5 +1,5 @@
 Qualtrics.SurveyEngine.addOnload(function(){
-	var url = 'https://app-prod-03.implicit.harvard.edu/implicit/user/ezlotnick/qiat/qiat.js'; 
+	var url = 'https://app-prod-03.implicit.harvard.edu/implicit/user/ezlotnick/qiat/settings.js'; 
 	var self = this;
 	var container = self.getQuestionContainer();
 	
@@ -20,7 +20,7 @@ Qualtrics.SurveyEngine.addOnload(function(){
 	function onLoad(){
 		minnoJS(canvas, url);
 		minnoJS.logger = function(value){
-			var el = container.querySelector('input[type="text"]');
+			var el = container.querySelector('textarea');
 			console.log(el);
 			el.value = value;
 		}		

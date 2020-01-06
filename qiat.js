@@ -2,6 +2,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
     return function qiat(settings) {
         var API = new APIConstructor();
         var current = API.addCurrent(settings);
+        var condition = +(Math.random() > 0.5);
 
         var catColor = '#FFFF00';
         var attColor = '#00FFFF';
@@ -48,7 +49,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         /** 
          * Randomly switch category/attribute order
          **/
-        if (Math.random() > 0.5) {
+        if (condition) {
             tmp = current.category1;
             current.category1 = settings.category2;
             current.category2 = tmp;
@@ -70,13 +71,27 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                 return ctx.logs;
             },
             // Transform logs into a string
-            serialize: function(name, logs, settings){
-                return JSON.stringify(logs);
+            // we save as CSV because qualtrics limits to 20K characters and this is more efficient.
+            serialize: function (name, logs, settings) {
+                var headers = ['condition', 'group', 'latency', 'block', 'stimulus', 'correct'];
+                var content = logs.map(function (log) { return [settings.condition, log.name, log.latency, log.data.block, log.data.stim, log.data.score]; });
+                content.unshift(headers);
+                return toCsv(content);
+
+                function toCsv(matrice) { return matrice.map(buildRow).join('\n'); }
+                function buildRow(arr) { return arr.map(normalize).join(','); }
+                // wrap in double quotes and escape inner double quotes
+                function normalize(val) {
+                    var quotableRgx = /(\n|,|")/;
+                    if (quotableRgx.test(val)) return '"' + val.replace(/"/g, '""') + '"';
+                    return val;
+                }
             },
             // Set logs into an input (i.e. put them wherever you want)
             send: function(name, serialized, settings, ctx){
                 (window.minnoJS.logger || _.noop)(serialized);
-            }
+            },
+            condition: condition
         });
         
         API.addSettings('onEnd', window.minnoJS.onEnd || _.noop)
@@ -90,6 +105,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         });
 
         API.addTrialSets('sort', {
+            data: {score:1}, // assume correct score, change it only on error
             input: [
                 { handle: 'skip1', on: 'keypressed', key: 27 }, //Esc + Enter will skip blocks
                 { handle: 'left', on: 'keypressed', key: 'd' },
@@ -115,7 +131,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                         { type: 'inputEquals', value: ['right', 'left'] }	// responded with one of the two responses
                     ],
                     actions: [
-                        { type: 'setTrialAttr', setter: { score: 0 } },	// set the score to 1
+                        { type: 'setTrialAttr', setter: { score: 0 } },	// set the score to 0
                         { type: 'showStim', handle: 'error' }, // show error stimulus
                         { type: 'trigger', handle: 'onError' }	// perhaps we need to end the trial (if no errorCorrection)
                     ]
