@@ -8,7 +8,6 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         var attColor = '#00FFFF';
         var catSize = '1.4em';
         var attSize = '1.4em';
-        var tmp;
 
         API.addSequence([
             {inherit:'instructions', data:{content:current.preTaskInstructions, center:'top'}},
@@ -22,27 +21,27 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             // block 2
             {inherit:'instructions', data:{content:current.instCategoryInventory, center:'top'}},
             {inherit:'instructions', data:{content:current.instCategoryPracticeHinted, showLayout:true, type:'category', side:1, center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:1}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
             getTrials({side:1, type:'category', n:2, block:2, hint:'true'}),
 
             // block 3
             {inherit:'instructions', data:{content:current.instCategoryPractice, showLayout:true, side:1, type:'category'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:1}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
             getTrials({side:1, type:'category', n:4, block:3}),
 
             // block 4
-            {inherit:'instructions', data:{content:current.instDouble, showLayout:true, side:2, type:'double', center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:2}},
+            {inherit:'instructions', data:{content:current.instDouble, showLayout:true, side:1, type:'double', center:'bottom'}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:2}},
             getTrials({side:1, type:'double', n:4, block:4}),
 
             // block 5
-            {inherit:'instructions', data:{content:current.instSwitchPractice, showLayout:true, side:1, type:'category', center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:1}},
+            {inherit:'instructions', data:{content:current.instSwitchPractice, showLayout:true, side:2, type:'category', center:'bottom'}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
             getTrials({side:2, type:'category', n:4, block:5}),
 
             // block 6
             {inherit:'instructions', data:{content:current.instSwitch, showLayout:true, side:2, type:'double', center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:2}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:2}},
             getTrials({side:2, type:'double', n:4, block:6})
         ]);
 
@@ -50,14 +49,17 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
          * Randomly switch category/attribute order
          **/
         if (condition) {
-            tmp = current.category1;
-            current.category1 = settings.category2;
-            current.category2 = tmp;
+            current.category1 = _.clone(settings.category1);
+            current.category2 = _.clone(settings.category2);
         }
         if (Math.random() > 0.5) {
-            tmp = current.attribute1;
-            current.attribute1 = settings.attribute2;
-            current.attribute2 = tmp;
+            current.category1 = _.clone(settings.category2);
+            current.category2 = _.clone(settings.category1);
+            // swap title and hints so that they stay constant across conditions
+            current.category1.title = settings.category1.title
+            current.category1.hint = settings.category1.hint
+            current.category2.title = settings.category2.title
+            current.category2.hint = settings.category2.hint
         }
         
         API.addSettings('logger', {
@@ -101,7 +103,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             background: '#3d3e3f',
             borderWidth: 0,
             canvasBackground: '#3d3e3f',
-            css: { color: 'white', borderTop: '2px solid #e7e7e9', lineHeight:1.2, fontWeight:400 }
+            css: { color: 'white', lineHeight:1.2, fontWeight:400 }
         });
 
         API.addTrialSets('sort', {
@@ -246,12 +248,12 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                         '<div style="font-size:30px;font-weight:bold;">',
                         '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#00FFFF">',
-                        '      <%= current.attribute1.name %>',
+                        '      <%= current.attribute1.title %>',
                         '    </div>',
                         '  <% } %>',
                         '  <% if ([\'double\',\'category\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#FFFF00; margin-top:0.5em;">',
-                        '      Type <%= trialData.side %>',
+                        '      <%= trialData.side == 1 ? current.category1.title : current.category2.title %>',
                         '    </div>',
                         '  <% } %>',
                         '</div>'
@@ -265,12 +267,12 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                         '<div style="font-size:30px;font-weight:bold;">',
                         '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#00FFFF">',
-                        '      <%= current.attribute2.name %>',
+                        '      <%= current.attribute1.title %>',
                         '    </div>',
                         '  <% } %>',
                         '  <% if ([\'double\',\'category\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#FFFF00; margin-top:0.5em;">',
-                        '      Type <%= trialData.side === 1 ? 2 : 1 %>',
+                        '      <%= trialData.side == 2 ? current.category1.title : current.category2.title %>',
                         '    </div>',
                         '  <% } %>',
                         '</div>'
@@ -282,23 +284,23 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         API.addTrialSets({
             attr1: current.attribute1.stimuli.map(stimToTrial('attribute')),
             attr2: current.attribute2.stimuli.map(stimToTrial('attribute')),
-            cat1: current.category1.stimuli.map(stimToTrial('category', ' - 1')),
-            cat2: current.category2.stimuli.map(stimToTrial('category', ' - 2')),
+            cat1: current.category1.stimuli.map(stimToTrial('category', current.category1.hint)),
+            cat2: current.category2.stimuli.map(stimToTrial('category', current.category2.hint)),
             attribute1set: [
-                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}},
-                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}}
+                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}, alias: current.attribute1.name},
+                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}, alias: current.attribute1.name}
             ].reduce(repeatArray,[]),
             attribute2set: [ // same as 1 - just convinience because we never switch locations
-                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}},
-                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}}
+                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}, alias: current.attribute2.name},
+                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}, alias: current.attribute2.name}
             ].reduce(repeatArray,[]),
             category1set: [
-                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'left'}},
-                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right'}}
+                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'left'}, alias: current.category1.name},
+                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right'}, alias: current.category1.name}
             ].reduce(repeatArray,[]),
             category2set: [
-                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right'}},
-                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'left'}}
+                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right'}, alias: current.category2.name},
+                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'left'}, alias: current.category2.name}
             ].reduce(repeatArray,[])
         });
 

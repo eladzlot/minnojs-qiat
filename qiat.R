@@ -44,5 +44,5 @@ minno.parse = function(df, id, data){
 }
 
 # for testing:
-df = data.frame(id = c(1,2,3,6,5), Q_47= c('',NA,'first,second\nthird,fourth\n5,6','first,second\n1,2','first,second\nthird,fourth\n'))
-minno.parse(df, id, Q_47)
+#df = data.frame(id = c(1,2,3,6,5), Q_47= c('',NA,'first,second\nthird,fourth\n5,6','first,second\n1,2','first,second\nthird,fourth\n'))
+#minno.parse(df, id, Q_47)

@@ -2,22 +2,23 @@ define(['./qiat.js'], function (qiatExtension) {
     return qiatExtension({
         // uncomment the following line in order to skip blocks using esc + enter
         // DEBUG: true, 
+
         category1: {
-            title: 'Type 1',
-            hint: '- 1',
+            title: 'סוג 2 ',
+            hint: ' - 2',
             name: "High Self-Criticism", //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
-                'I often find that I don\'t live up to my own standards or ideals',
-                'When things go wrong I call myself names',
-                'I tend not to be satisfied with what I have',
-                'I have a difficult time accepting weaknesses in myself',
-                'I tend to be very critical of myself',
-                'I very frequently compare myself to standards or goals'
+                'אני מוצא שלעיתים קרובות אינני עומד בציפיות של עצמי',
+                'כשדברים אינם מסתדרים אני קורא לעצמי בשמות',
+                'אני נוטה לא להיות מרוצה ממה שיש לי',
+                'יש לי קושי להכיר בחולשות שלי',
+                'אני נוטה להיות מאוד ביקורתי כלפי עצמי',
+                'לעיתים קרובות אני משווה את עצמי לפי סטנדרטים או מטרות'
             ]
         },
         category2: {
-            title: 'Type 2',
-            hint: '- 2',
+            title: 'סוג 1',
+            hint: ' - 1',
             name: "Low Self-Criticism", //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
                 'I find it easy to forgive myself',
@@ -29,7 +30,7 @@ define(['./qiat.js'], function (qiatExtension) {
             ]
         },
         attribute2: {
-            title: 'True',
+            title: 'שקר',
             name: 'TRUE',
             stimuli: [
                 'I am completing a computer task',
@@ -40,7 +41,7 @@ define(['./qiat.js'], function (qiatExtension) {
             ]
         },
         attribute1: {
-            title: 'False',
+            title: 'אמת',
             name: 'FALSE',
             stimuli: [
                 'I am playing football',
