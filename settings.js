@@ -28,7 +28,7 @@ define(['./qiat.js'], function (qiatExtension) {
                 'I seldom compare myself to standards or goals'
             ]
         },
-        attribute2: {
+        attribute1: {
             title: 'True',
             name: 'TRUE',
             stimuli: [
@@ -39,7 +39,7 @@ define(['./qiat.js'], function (qiatExtension) {
                 'I am looking at a computer screen'
             ]
         },
-        attribute1: {
+        attribute2: {
             title: 'False',
             name: 'FALSE',
             stimuli: [
@@ -50,6 +50,12 @@ define(['./qiat.js'], function (qiatExtension) {
                 'I am buying groceries in the local grocery store'
             ]
         },
+
+        /**
+         * The number of trials for each block
+         * The first number represents the first block, the second number represents the second block and so on.
+         */
+        blockCount:[20,20,40,40,40,40,40],
 
         /*
          * These are instructions that will be displayed at the beginning of the task.

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 define(['timeAPI','underscore'], function(APIConstructor, _) {
     return function qiat(settings) {
         var API = new APIConstructor();
@@ -8,6 +9,8 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         var attColor = '#00FFFF';
         var catSize = '1.4em';
         var attSize = '1.4em';
+        var blockCount = settings.blockCount;
+        if (blockCount.length != 7 && blockCount.some(_.negate(isFinite))) throw new Error('blockCount must have seven numerical values');
 
         API.addSequence([
             {inherit:'instructions', data:{content:current.preTaskInstructions, center:'top'}},
@@ -16,33 +19,33 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             {inherit:'instructions', data:{content:current.instAttributeInventory, center:'top'}},
             {inherit:'instructions', data:{content:current.instAttributePractice, showLayout:true, type:'attribute', side:1, center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:1}},
-            getTrials({side:1, type:'attribute', n:2, block:1}),
+            getTrials({side:1, type:'attribute', n:blockCount[0], block:1}),
 
             // block 2
             {inherit:'instructions', data:{content:current.instCategoryInventory, center:'top'}},
             {inherit:'instructions', data:{content:current.instCategoryPracticeHinted, showLayout:true, type:'category', side:1, center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
-            getTrials({side:1, type:'category', n:2, block:2, hint:'true'}),
+            getTrials({side:1, type:'category', n:2, block:blockCount[1], hint:'true'}),
 
             // block 3
             {inherit:'instructions', data:{content:current.instCategoryPractice, showLayout:true, side:1, type:'category'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
-            getTrials({side:1, type:'category', n:4, block:3}),
+            getTrials({side:1, type:'category', n:blockCount[2], block:3}),
 
             // block 4
             {inherit:'instructions', data:{content:current.instDouble, showLayout:true, side:1, type:'double', center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:2}},
-            getTrials({side:1, type:'double', n:4, block:4}),
+            getTrials({side:1, type:'double', n:blockCount[3], block:4}),
 
             // block 5
             {inherit:'instructions', data:{content:current.instSwitchPractice, showLayout:true, side:2, type:'category', center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
-            getTrials({side:2, type:'category', n:4, block:5}),
+            getTrials({side:2, type:'category', n:blockCount[4], block:5}),
 
             // block 6
             {inherit:'instructions', data:{content:current.instSwitch, showLayout:true, side:2, type:'double', center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:2}},
-            getTrials({side:2, type:'double', n:4, block:6})
+            getTrials({side:2, type:'double', n:blockCount[5], block:6})
         ]);
 
         /** 
@@ -76,7 +79,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             // we save as CSV because qualtrics limits to 20K characters and this is more efficient.
             serialize: function (name, logs, settings) {
                 var headers = ['condition', 'group', 'latency', 'block', 'stimulus', 'correct'];
-                var content = logs.map(function (log) { return [settings.condition, log.name, log.latency, log.data.block, log.data.stim, log.data.score]; });
+                var content = logs.map(function (log) { return [settings.condition, log.data.alias, log.latency, log.data.block, log.data.stimIndex, log.data.score]; });
                 content.unshift(headers);
                 return toCsv(content);
 
@@ -90,13 +93,13 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                 }
             },
             // Set logs into an input (i.e. put them wherever you want)
-            send: function(name, serialized, settings, ctx){
+            send: function(name, serialized){
                 (window.minnoJS.logger || _.noop)(serialized);
             },
             condition: condition
         });
         
-        API.addSettings('onEnd', window.minnoJS.onEnd || _.noop)
+        API.addSettings('onEnd', window.minnoJS.onEnd || _.noop);
 
         API.addSettings('canvas', {
             proportions: {width: 700, height: 504},
@@ -148,7 +151,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                     actions: [
                         { type: 'removeInput', handle: 'All' }, //Cannot respond anymore
                         { type: 'log' }, // log this trial
-                        { type: 'trigger', handle: 'ITI', duration: 500 } // Continue to the ITI, after that error fb has been displayed
+                        { type: 'trigger', handle: 'end' } // Continue to the end
                     ]
                 },
 
@@ -158,21 +161,11 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                     actions: [
                         { type: 'removeInput', handle: 'All' }, //Cannot respond anymore
                         { type: 'log' }, // log this trial
-                        { type: 'trigger', handle: 'ITI' } // End the trial after ITI
+                        { type: 'trigger', handle: 'end' } // End the trial
                     ]
                 },
 
-                // Display nothing for ITI until the next trial
-                {
-                    conditions: [{ type: 'inputEquals', value: 'ITI' }],
-                    actions: [
-                        { type: 'removeInput', handle: 'All' }, //Cannot respond anymore
-                        { type: 'hideStim', handle: 'All' }, // hide everything
-                        { type: 'trigger', handle: 'end', duration: 250  } // Continue to the ITI, after that error fb has been displayed
-                    ]
-                },
-
-                // end after ITI
+                // end trial
                 {
                     conditions: [{ type: 'inputEquals', value: 'end' }],
                     actions: [
@@ -222,17 +215,10 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                     conditions: [{type:'begin'}, {type:'trialEquals', property:'showLayout', value:true}],
                     actions: [{type:'showStim', handle: 'All'}]
                 },
-				{
-					conditions: [{type:'inputEquals',value:'next'}],
-					actions: [
-						{type:'hideStim', handle:'All'},
-						{type:'trigger', handle:'endTrial', duration:500}
-					]
-				},
-				{
-					conditions: [{type:'inputEquals',value:'endTrial'}],
-					actions: [{type:'endTrial'}]
-				}
+                {
+                    conditions: [{ type: 'inputEquals', value: 'next' }],
+                    actions: [{ type: 'endTrial' }]
+                }
             ]
         });
 
@@ -267,7 +253,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                         '<div style="font-size:30px;font-weight:bold;">',
                         '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#00FFFF">',
-                        '      <%= current.attribute1.title %>',
+                        '      <%= current.attribute2.title %>',
                         '    </div>',
                         '  <% } %>',
                         '  <% if ([\'double\',\'category\'].indexOf(trialData.type) !== -1) { %>',
@@ -287,20 +273,20 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             cat1: current.category1.stimuli.map(stimToTrial('category', current.category1.hint)),
             cat2: current.category2.stimuli.map(stimToTrial('category', current.category2.hint)),
             attribute1set: [
-                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}, alias: current.attribute1.name},
-                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}, alias: current.attribute1.name}
+                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left', alias: current.attribute1.name}},
+                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right', alias: current.attribute1.name}}
             ].reduce(repeatArray,[]),
             attribute2set: [ // same as 1 - just convinience because we never switch locations
-                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left'}, alias: current.attribute2.name},
-                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right'}, alias: current.attribute2.name}
+                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left', alias: current.attribute2.name}},
+                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right', alias: current.attribute2.name}}
             ].reduce(repeatArray,[]),
             category1set: [
-                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'left'}, alias: current.category1.name},
-                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right'}, alias: current.category1.name}
+                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'left', alias: current.category1.name}},
+                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right', alias: current.category1.name}}
             ].reduce(repeatArray,[]),
             category2set: [
-                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right'}, alias: current.category2.name},
-                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'left'}, alias: current.category2.name}
+                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right', alias: current.category2.name}},
+                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'left', alias: current.category2.name}}
             ].reduce(repeatArray,[])
         });
 
@@ -345,10 +331,10 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
          * @param {String} hintText text to concatenate as hint
          */
         function stimToTrial(type, hintText){
-            return function(stim){
+            return function(stim,index){
                 return {
                     inherit:'sort',
-                    data:{stim:stim, hintText:hintText},
+                    data:{stim:stim, stimIndex:index, hintText:hintText},
                     stimuli: [
                         {inherit: type},
                         {inherit: 'error'}
