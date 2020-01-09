@@ -39,7 +39,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
 
             // block 5
             {inherit:'instructions', data:{content:current.instSwitchPractice, showLayout:true, side:2, type:'category', center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:2}},
             getTrials({side:2, type:'category', n:blockCount[4], block:5}),
 
             // block 6
