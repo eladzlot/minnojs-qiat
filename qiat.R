@@ -41,7 +41,7 @@ qiat.parse.quoted = function(df, id, data){
 }
 
 qiat.parse = function(df, id, data){
-  minno.parse.quoted(df, deparse(substitute(id)), deparse(substitute(data)))
+  qiat.parse.quoted(df, deparse(substitute(id)), deparse(substitute(data)))
 }
 
 # for testing:
