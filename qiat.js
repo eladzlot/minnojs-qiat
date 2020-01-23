@@ -12,6 +12,34 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         var blockCount = settings.blockCount;
         if (blockCount.length != 7 && blockCount.some(_.negate(isFinite))) throw new Error('blockCount must have seven numerical values');
 
+        /**
+         * Creates a pseudo-random value generator. The seed must be an integer.
+         * https://gist.github.com/blixt/f17b47c62508be59987b
+         */
+        var rand = {
+            _seed: 12,
+            next: function () { return this._seed = this._seed * 16807 % 2147483647; },
+            nextFloat: function () { return (this.next() - 1) / 2147483646; },
+            shuffle: function shuffle(array) {
+                var currentIndex = array.length, temporaryValue, randomIndex;
+
+                // While there remain elements to shuffle...
+                while (0 !== currentIndex) {
+
+                    // Pick a remaining element...
+                    randomIndex = Math.floor(this.nextFloat() * currentIndex);
+                    currentIndex -= 1;
+
+                    // And swap it with the current element.
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                }
+
+                return array;
+            }
+        };
+
         API.addSequence([
             {inherit:'instructions', data:{content:current.preTaskInstructions, center:'top'}},
 
@@ -19,18 +47,18 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             {inherit:'instructions', data:{content:current.instAttributeInventory, center:'top'}},
             {inherit:'instructions', data:{content:current.instAttributePractice, showLayout:true, type:'attribute', side:1, center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'attribute', side:1}},
-            getTrials({side:1, type:'attribute', n:blockCount[0], block:1}),
+            getPseudorandomTrials({side:1, type:'attribute', n:blockCount[0], block:1}),
 
             // block 2
             {inherit:'instructions', data:{content:current.instCategoryInventory, center:'top'}},
             {inherit:'instructions', data:{content:current.instCategoryPracticeHinted, showLayout:true, type:'category', side:1, center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
-            getTrials({side:1, type:'category', n:2, block:blockCount[1], hint:'true'}),
+            getPseudorandomTrials({side:1, type:'category', n:blockCount[1], block:2, hint:'true'}),
 
             // block 3
             {inherit:'instructions', data:{content:current.instCategoryPractice, showLayout:true, side:1, type:'category'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:1}},
-            getTrials({side:1, type:'category', n:blockCount[2], block:3}),
+            getPseudorandomTrials({side:1, type:'category', n:blockCount[2], block:3}),
 
             // block 4
             {inherit:'instructions', data:{content:current.instDouble, showLayout:true, side:1, type:'double', center:'bottom'}},
@@ -40,7 +68,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             // block 5
             {inherit:'instructions', data:{content:current.instSwitchPractice, showLayout:true, side:2, type:'category', center:'bottom'}},
             {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'category', side:2}},
-            getTrials({side:2, type:'category', n:blockCount[4], block:5}),
+            getPseudorandomTrials({side:2, type:'category', n:blockCount[4], block:5}),
 
             // block 6
             {inherit:'instructions', data:{content:current.instSwitch, showLayout:true, side:2, type:'double', center:'bottom'}},
@@ -231,15 +259,15 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                 location: { top: 5, left: 0 },
                 media: {
                     html: [
-                        '<div style="font-size:30px;font-weight:bold;">',
-                        '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
-                        '    <div style="color:#00FFFF">',
-                        '      <%= current.attribute1.title %>',
-                        '    </div>',
-                        '  <% } %>',
+                        '<div style="font-size:30px;font-weight:bold;text-align:left;">',
                         '  <% if ([\'double\',\'category\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#FFFF00; margin-top:0.5em;">',
                         '      <%= trialData.side == 1 ? current.category1.title : current.category2.title %>',
+                        '    </div>',
+                        '  <% } %>',
+                        '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
+                        '    <div style="color:#00FFFF">',
+                        '      <%= current.attribute1.title %>',
                         '    </div>',
                         '  <% } %>',
                         '</div>'
@@ -250,15 +278,15 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                 location: { top: 5, right: 0 },
                 media: {
                     html: [
-                        '<div style="font-size:30px;font-weight:bold;">',
-                        '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
-                        '    <div style="color:#00FFFF">',
-                        '      <%= current.attribute2.title %>',
-                        '    </div>',
-                        '  <% } %>',
+                        '<div style="font-size:30px;font-weight:bold;text-align:right;">',
                         '  <% if ([\'double\',\'category\'].indexOf(trialData.type) !== -1) { %>',
                         '    <div style="color:#FFFF00; margin-top:0.5em;">',
                         '      <%= trialData.side == 2 ? current.category1.title : current.category2.title %>',
+                        '    </div>',
+                        '  <% } %>',
+                        '  <% if ([\'double\',\'attribute\'].indexOf(trialData.type) !== -1) { %>',
+                        '    <div style="color:#00FFFF">',
+                        '      <%= current.attribute2.title %>',
                         '    </div>',
                         '  <% } %>',
                         '</div>'
@@ -274,18 +302,18 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
             cat2: current.category2.stimuli.map(stimToTrial('category', current.category2.hint)),
             attribute1set: [
                 {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left', alias: current.attribute1.name}},
-                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right', alias: current.attribute1.name}}
+                {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right', alias: current.attribute2.name}}
             ].reduce(repeatArray,[]),
             attribute2set: [ // same as 1 - just convinience because we never switch locations
-                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left', alias: current.attribute2.name}},
+                {inherit:{type:'exRandom', set:'attr1'}, data: {corResp:'left', alias: current.attribute1.name}},
                 {inherit:{type:'exRandom', set:'attr2'}, data: {corResp:'right', alias: current.attribute2.name}}
             ].reduce(repeatArray,[]),
             category1set: [
                 {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'left', alias: current.category1.name}},
-                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right', alias: current.category1.name}}
+                {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'right', alias: current.category2.name}}
             ].reduce(repeatArray,[]),
             category2set: [
-                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right', alias: current.category2.name}},
+                {inherit:{type:'exRandom', set:'cat1'}, data: {corResp:'right', alias: current.category1.name}},
                 {inherit:{type:'exRandom', set:'cat2'}, data: {corResp:'left', alias: current.category2.name}}
             ].reduce(repeatArray,[])
         });
@@ -322,6 +350,34 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                         data: trials
                     }
                 ]
+            }
+        }
+
+        function getPseudorandomTrials(trialSettings){
+            var side = trialSettings.side;
+            var type = trialSettings.type;
+            var n = trialSettings.n;
+            var data = [];
+            var trials = type == 'attribute'
+                ? [].concat(
+                    getRange(current.attribute1, 'attr1', 'left'),
+                    getRange(current.attribute2, 'attr2', 'right')
+                )
+                : [].concat(
+                    getRange(current.category1, 'cat2', side == 1 ? 'left' : 'right'),
+                    getRange(current.category2, 'cat2', side == 2 ? 'left' : 'right')
+                );
+
+            // we need to clone so that specific elements do not repeat themselves.
+            while (data.length < n) { data = data.concat(rand.shuffle(_.cloneDeep(trials))); }
+            data.length = n;
+
+            return {mixer:'wrapper', data:data};
+
+            function getRange(catObj, set, corResp){
+                return catObj.stimuli.map(function(v,i){
+                    return { inherit: { set: set, data: { stimIndex: i } }, data: _.assign({ corResp: corResp, alias: catObj.name },trialSettings) };
+                });
             }
         }
 

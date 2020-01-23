@@ -4,8 +4,8 @@ define(['./qiat.js'], function (qiatExtension) {
         // DEBUG: true, 
         category1: {
             title: 'Type 1',
-            hint: '- 1',
-            name: "High Self-Criticism", //Will appear in the data.
+            hint: ' - 1',
+            name: 'High Self-Criticism', //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
                 'I often find that I don\'t live up to my own standards or ideals',
                 'When things go wrong I call myself names',
@@ -17,8 +17,8 @@ define(['./qiat.js'], function (qiatExtension) {
         },
         category2: {
             title: 'Type 2',
-            hint: '- 2',
-            name: "Low Self-Criticism", //Will appear in the data.
+            hint: ' - 2',
+            name: 'Low Self-Criticism', //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
                 'I find it easy to forgive myself',
                 'I like being me',
