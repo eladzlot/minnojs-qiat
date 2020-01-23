@@ -364,7 +364,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
                     getRange(current.attribute2, 'attr2', 'right')
                 )
                 : [].concat(
-                    getRange(current.category1, 'cat2', side == 1 ? 'left' : 'right'),
+                    getRange(current.category1, 'cat1', side == 1 ? 'left' : 'right'),
                     getRange(current.category2, 'cat2', side == 2 ? 'left' : 'right')
                 );
 
