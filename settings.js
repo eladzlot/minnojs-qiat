@@ -1,4 +1,4 @@
-define(['./qiat.js'], function (qiatExtension) {
+define(['https://pcplab.sfo2.digitaloceanspaces.com/common/qiat.js'], function (qiatExtension) {
     return qiatExtension({
         // uncomment the following line in order to skip blocks using esc + enter
         // DEBUG: true, 

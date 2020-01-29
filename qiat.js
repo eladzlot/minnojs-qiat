@@ -17,7 +17,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
          * https://gist.github.com/blixt/f17b47c62508be59987b
          */
         var rand = {
-            _seed: 12,
+            _seed: 112,
             next: function () { return this._seed = this._seed * 16807 % 2147483647; },
             nextFloat: function () { return (this.next() - 1) / 2147483646; },
             shuffle: function shuffle(array) {
@@ -62,7 +62,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
 
             // block 4
             {inherit:'instructions', data:{content:current.instDouble, showLayout:true, side:1, type:'double', center:'bottom'}},
-            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:2}},
+            {inherit:'instructions', data:{content:current.startBlockInst, showLayout:true, type:'double', side:1}},
             getTrials({side:1, type:'double', n:blockCount[3], block:4}),
 
             // block 5
