@@ -7,6 +7,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
 
         var catColor = '#FFFF00';
         var attColor = '#00FFFF';
+        var bkgColor = '#3d3e3f';
         var catSize = '1.4em';
         var attSize = '1.4em';
         var blockCount = settings.blockCount;
@@ -130,10 +131,11 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         API.addSettings('onEnd', window.minnoJS.onEnd || _.noop);
 
         API.addSettings('canvas', {
-            proportions: {width: 700, height: 504},
-            background: '#3d3e3f',
+            proportions: 0.7 ,
+            width:750,
             borderWidth: 0,
-            canvasBackground: '#3d3e3f',
+            background:bkgColor,
+            canvasBackground:bkgColor,
             css: { color: 'white', lineHeight:1.2, fontWeight:400 }
         });
 
