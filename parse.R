@@ -40,8 +40,8 @@ qiat.parse.quoted = function(df, id, data){
   do.call(rbind,dataPages)
 }
 
-qiat.parse = function(df, id, data){
-  qiat.parse.quoted(df, deparse(substitute(id)), deparse(substitute(data)))
+qiat.parse = function(df, id, dataColumn){
+  qiat.parse.quoted(df, deparse(substitute(id)), deparse(substitute(dataColumn)))
 }
 
 # for testing:

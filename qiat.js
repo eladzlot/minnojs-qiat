@@ -97,6 +97,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         API.addSettings('logger', {
             // gather logs in array
             onRow: function(logName, log, settings, ctx){
+                console.log(log);
                 if (!ctx.logs) ctx.logs = [];
                 ctx.logs.push(log);
             },
