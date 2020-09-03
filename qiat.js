@@ -3,7 +3,7 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
     return function qiat(settings) {
         var API = new APIConstructor();
         var current = API.addCurrent(settings);
-        var condition = +(Math.random() > 0.5);
+        var condition = +(Math.random() < 0.5);
 
         var catColor = '#FFFF00';
         var attColor = '#00FFFF';
@@ -78,16 +78,13 @@ define(['timeAPI','underscore'], function(APIConstructor, _) {
         ]);
 
         /** 
-         * Randomly switch category/attribute order
+         * Randomly switch category order
          **/
         if (condition) {
-            current.category1 = _.clone(settings.category1);
-            current.category2 = _.clone(settings.category2);
-        }
-        if (Math.random() > 0.5) {
             current.category1 = _.clone(settings.category2);
             current.category2 = _.clone(settings.category1);
-            // swap title and hints so that they stay constant across conditions
+
+            // swap title and hints so that they stay constant across conditions (i.e. Type 1 always starts on the left)
             current.category1.title = settings.category1.title
             current.category1.hint = settings.category1.hint
             current.category2.title = settings.category2.title

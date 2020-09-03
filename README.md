@@ -45,7 +45,7 @@ The interpertation of the data exported from the qIAT is as follows:
 Column      | Description
 ----------- | -----------
 id          | The value of the ID column as defined in minno.parse
-condition   | Randomization condition (can be 0 or 1)
+condition   | Randomization condition (can be 0 or 1) - condition 1 indicates that category1 started out on the left and vice versa
 group       | The name of the stimulus group as defined in the settings file (e.g. category1.name)
 latency     | The response latency in miliseconds
 block       | Block number

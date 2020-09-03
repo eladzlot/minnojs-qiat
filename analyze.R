@@ -78,7 +78,7 @@ qiat.analyze = function (
           ) 
           / (nCong+nIncong-2)
         )
-        dscore = (meanIncong-meanCong)/pooled_sd
+        dscore = (meanCong-meanIncong)/pooled_sd
         outcome[,paste0('dscore_',i)] = dscore * ifelse(outcome$condition == 1, -1, 1)
         outcome[,paste0('pooledSD_',i)] = pooled_sd
       }

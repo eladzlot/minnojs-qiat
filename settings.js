@@ -2,6 +2,7 @@ define(['https://pcplab.sfo2.digitaloceanspaces.com/common/qiat.js'], function (
     return qiatExtension({
         // uncomment the following line in order to skip blocks using esc + enter
         // DEBUG: true, 
+
         category1: {
             title: 'Type 1',
             hint: ' - 1',
@@ -29,17 +30,6 @@ define(['https://pcplab.sfo2.digitaloceanspaces.com/common/qiat.js'], function (
             ]
         },
         attribute1: {
-            title: 'True',
-            name: 'TRUE',
-            stimuli: [
-                'I am completing a computer task',
-                'I am using the computer',
-                'I am breathing air',
-                'I have my fingers placed on the keyboard',
-                'I am looking at a computer screen'
-            ]
-        },
-        attribute2: {
             title: 'False',
             name: 'FALSE',
             stimuli: [
@@ -48,6 +38,17 @@ define(['https://pcplab.sfo2.digitaloceanspaces.com/common/qiat.js'], function (
                 'I am currently playing an electric guitar',
                 'I am climbing a steep mountain',
                 'I am buying groceries in the local grocery store'
+            ]
+        },
+        attribute2: {
+            title: 'True',
+            name: 'TRUE',
+            stimuli: [
+                'I am completing a computer task',
+                'I am using the computer',
+                'I am breathing air',
+                'I have my fingers placed on the keyboard',
+                'I am looking at a computer screen'
             ]
         },
 
