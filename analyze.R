@@ -79,7 +79,7 @@ qiat.analyze = function (
           / (nCong+nIncong-2)
         )
         dscore = (meanCong-meanIncong)/pooled_sd
-        outcome[,paste0('dscore_',i)] = dscore * ifelse(outcome$condition == 1, -1, 1)
+        outcome[,paste0('dscore_',i)] = dscore * ifelse(outcome$condition == 0, 1, -1)
         outcome[,paste0('pooledSD_',i)] = pooled_sd
       }
       if (length(cong) == 1) outcome$dscore = outcome$dscore_1
@@ -102,7 +102,7 @@ qiat.analyze = function (
       dscores.even = dscores.even,
       dscores.odd = dscores.odd,
       participants = participants.validity %>%
-        left_join(dscores.all %>% select(id,dscore), by = 'id') %>%
+        left_join(dscores.all %>% select(id,condition, dscore), by = 'id') %>%
         left_join(dscores.even %>% select(id,dscore_even = dscore), by = 'id') %>%
         left_join(dscores.odd %>% select(id,dscore_odd = dscore), by = 'id')
     )
