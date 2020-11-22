@@ -1,55 +1,54 @@
-// eslint-disable-next-line no-undef
-define(['./qiat.js'], function (qiatExtension) {
+define(['https://pcplab.sfo2.digitaloceanspaces.com/common/qiat.js'], function (qiatExtension) {
     return qiatExtension({
         // uncomment the following line in order to skip blocks using esc + enter
         // DEBUG: true, 
 
         category1: {
-            title: 'סוג 2 ',
+            title: 'סוג 2', // swich titles to fit hebrew
             hint: ' - 2',
-            name: "High Self-Criticism", //Will appear in the data.
+            name: 'משפטים עצמיים חיוביים', //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
-                'אני מוצא שלעיתים קרובות אינני עומד בציפיות של עצמי',
-                'כשדברים אינם מסתדרים אני קורא לעצמי בשמות',
-                'אני נוטה לא להיות מרוצה ממה שיש לי',
-                'יש לי קושי להכיר בחולשות שלי',
-                'אני נוטה להיות מאוד ביקורתי כלפי עצמי',
-                'לעיתים קרובות אני משווה את עצמי לפי סטנדרטים או מטרות'
+                'אני מכובדת',
+                'אני בעלת ערך',
+                'אני מוכשרת',
+                'אני מוצלחת',
+                'אני טובה',
+                'אני מעניינת'
             ]
         },
         category2: {
-            title: 'סוג 1',
+            title: 'סוג 1',  // swich titles to fit hebrew
             hint: ' - 1',
-            name: "Low Self-Criticism", //Will appear in the data.
+            name: 'משפטים עצמיים שליליים', //Will appear in the data.
             stimuli: [ //Stimuli content as PIP's media objects
-                'I find it easy to forgive myself',
-                'I like being me',
-                'When things go wrong I can still feel lovable and acceptable',
-                'I am gentle and supportive with myself',
-                'I can accept failures and setbacks without feeling inadequate',
-                'I seldom compare myself to standards or goals'
+                'אני לא אהובה',
+                'אני חסרת ערך',
+                'אני חלשה',
+                'אני פגיעה',
+                'אני רעה',
+                'אני כשלון'
             ]
         },
         attribute1: {
             title: 'שקר',
-            name: 'TRUE',
+            name:  'שקר',
             stimuli: [
-                'I am completing a computer task',
-                'I am using the computer',
-                'I am breathing air',
-                'I have my fingers placed on the keyboard',
-                'I am looking at a computer screen'
+                'אני מנגנת עכשיו על גיטרה חשמלית',
+                'אני נמצאת בחוף הים',
+                'אני כרגע מטפסת על הר',
+                'אני קונה כרגע מצרכים במכולת',
+                'אני צופה בחדשות'
             ]
         },
         attribute2: {
             title: 'אמת',
-            name: 'FALSE',
+            name:  'אמת',
             stimuli: [
-                'I am playing football',
-                'I am sunbathing at the beach',
-                'I am currently playing an electric guitar',
-                'I am climbing a steep mountain',
-                'I am buying groceries in the local grocery store'
+                'אני מבצעת ניסוי בפסיכולוגיה',
+                'אני כרגע מול המחשב',
+                'אני צופה במסך המחשב',
+                'האצבעות שלי מונחות על המקלדת',
+                'אני קוראת את מה שכתוב על המסך'
             ]
         },
 
@@ -65,20 +64,20 @@ define(['./qiat.js'], function (qiatExtension) {
          * You can add any number of instruction pages into the array
          */
         preTaskInstructions: [
-            '<div style="color: white; text-align: left;">',
-            '<div>Please make sure that you have read the instructions thoroughly before continuing to the next page.</div><div>In the next task, you will need to classify sentences into categories.<br>',
-            'Please do this as quickly as you can, while making as few mistakes as possible.<br>',
-            'These are the four categories into which you will classify the sentences:</div>',
-            '<font color="#FFFF00">Type 1<br>Type 2</font><br>',
-            '<font color="#00FFFF">True<br>False</font>',
-            '<div><br>To continue reading the instructions, press the space bar.</div>',
+            '<div style="color: white; text-align:right;direction:rtl;">',
+            '<div> אנא ודאי כי קראת את ההוראות ביסודיות לפני שתמשיכי לעמוד הבא.</div><div>במשימה שלפניך תתבקשי למיין משפטים לקטגוריות.<br>',
+            'המשימה דורשת שתפעלי מהר עד כמה שאפשר, ושתבצעי כמה שפחות טעויות.<br>',
+            'אלה ארבע הקטגוריות אליהן תתבקשי לסווג את המשפטים:</div>',
+            '<font color="#FFFF00"> <%= current.category1.title %> <br> <%= current.category2.title %> </font><br>',
+            '<font color="#00FFFF"> <%= current.attribute1.title %> <br> <%= current.attribute2.title %> </font>',
+            '<div><br>אנא לחצי על מקש הרווח על מנת להמשיך...</div>',
             '</div>'
         ].join('\n'),
 
         /*
          * This is the prompt that is displayed before the start of each trial
          */
-        startBlockInst: '<div style="font-size:22px;">Press the spacebar to begin</div>',
+        startBlockInst: '<div style="font-size:22px;">לחצי על מקש הרווח על מנת להתחיל</div>',
 
         /*
          * Block 1
@@ -86,21 +85,16 @@ define(['./qiat.js'], function (qiatExtension) {
          * Instruction page displaying all attributes
          */
         instAttributeInventory: [
-            '<div style="text-align:left">',
-            '<p>These are the sentences you will need to classify first:</p>',
+            '<div style="text-align:right;direction:rtl;">',
+            '<p>אלה המשפטים שתתבקשי לחלק במטלת המיון הראשונה:</p>',
             '<table style="height: 238px; width: 779px;" cellspacing="10">',
             '<tbody>',
             '<tr style="height: 31px;">',
-            '<td style="width: 362px; height: 31px;"><span style="color: #00ffff;">True: </span></td>',
+            '<td style="width: 362px; height: 31px;"><span style="color: #00ffff;"><%= current.attribute1.title %>: </span></td>',
             '<td style="width: 35px; height: 31px;"><span style="color: #00ffff;"> </span></td>',
-            '<td style="width: 366px; height: 31px;"><span style="color: #00ffff;">False: </span></td>',
+            '<td style="width: 366px; height: 31px;"><span style="color: #00ffff;"><%= current.attribute2.title %>: </span></td>',
             '</tr>',
             '<% for (var i = 0; i<current.attribute1.stimuli.length; i++) { %>',
-            '    <tr style="height: 12px;">',
-            '    <td style="width: 362px; height: 12px;"><span style="color: #00ffff;"> </span></td>',
-            '    <td style="width: 35px; height: 12px;"><span style="color: #00ffff;"> </span></td>',
-            '    <td style="width: 366px; height: 12px;"><span style="color: #00ffff;"> </span></td>',
-            '    </tr>',
             '    <tr style="height: 49px;">',
             '    <td style="width: 362px; height: 49px;"><span style="color: #00ffff;"><%= current.attribute1.stimuli[i] %></span></td>',
             '    <td style="width: 35px; height: 49px;"><span style="color: #00ffff;"> </span></td>',
@@ -109,23 +103,23 @@ define(['./qiat.js'], function (qiatExtension) {
             '<% } %>',
             '</tbody>',
             '</table>',
-            '<p> Press the spacebar to continue reading the instructions...</p></div>'
+            '<p> לחצי על מקש רווח על מנת להמשיך לקרוא את ההוראות...</p></div>'
         ].join('\n'),
 
         /*
          * Instructions for attribute practice
          */
         instAttributePractice: [
-            '<div style="font-size: 22px; color: white; text-align: left;">',
+            '<div style="font-size: 22px; color: white; text-align:right;direction:rtl;">',
             '<p id="instructions">',
-            'Please <b>PUT YOUR INDEX FINGERS</b> on the <b>D</b> and <b>L</b> keys of your keyboard.<br>',
-            'Sentences representing the categories at the top of the screen will appear one by one in the middle of the screen.<br>',
-            'When the sentence belongs to a category on the left, press the D key.<br>',
-            'When the sentence belongs to a category on the right, press the L key.<br><br></p>',
-            '<p id="instructions">Each sentence belongs to only one category.<br>',
-            'If you make an error, an <font color="#FF0000">X</font> will appear.&nbsp;',
-            'You will need to quickly press the other, correct key.<br>',
-            'Please press the space bar to continue...',
+            '<b> אנא </b> הניחי את אצבע יד שמאל על מקש <b>D</b>  הניחי את אצבע יד ימין על מקש <b>L</b>  במקלדת שלפניך <br>',
+            'משפטים המייצגים את הקטגוריות שבראש המסך יופיעו בזה אחר זה במרכז המסך.<br>',
+            'כאשר המשפט שייך לקטגורה מצד ימין, לחצי על מקש הD.  <br>',
+            'כאשר המשפט שייך לקטגוריה מצד שמאל, לחצי על מקש ה L. <br><br></p>',
+            '<p id="instructions"> כל משפט שייך לקטגוריה אחת בלבד. <br>',
+            'אם תבצעי טעות <font color="#FF0000">X</font> יופיע.&nbsp;',
+            'בכדי לתקן את הטעות, לחצי על המקש השני. למשל, אם לחצת בטעות L , תקני זאת על ידי לחיצה על מקש הD. <br>',
+            'אנא לחצי על מקש הרווח על מנת להמשיך...',
             '</p>',
             '</div>'
         ].join('\n'),
@@ -136,21 +130,16 @@ define(['./qiat.js'], function (qiatExtension) {
          * Instruction page displaying all categories
          */
         instCategoryInventory: [
-            '<div style="text-align:left">',
-            '<p>These are the sentences you will need to classify now:</p>',
+            '<div style="text-align:right;direction:rtl;">',
+            '<p>אלה המשפטים שתתבקשי לסווג במטלת המיון הבאה:</p>',
             '<table style="height: 238px; width: 779px;" cellspacing="10">',
             '<tbody style="color: #ffff00;">',
             '<tr style="height: 31px;">',
-            '<td style="width: 362px; height: 31px;"><span >Sentences describing Type 1: </span></td>',
+            '<td style="width: 362px; height: 31px;"><span >משפטים המתארים את <%= current.category1.title %>: </span></td>',
             '<td style="width: 35px; height: 31px;"></td>',
-            '<td style="width: 366px; height: 31px;"><span>Sentences describing Type 2: </span></td>',
+            '<td style="width: 366px; height: 31px;"><span>משפטים המתארים את <%= current.category2.title %>: </span></td>',
             '</tr>',
             '<% for (var i = 0; i<current.category1.stimuli.length; i++) { %>',
-            '    <tr style="height: 12px;">',
-            '    <td style="width: 362px; height: 12px;"></td>',
-            '    <td style="width: 35px;  height: 12px;"></td>',
-            '    <td style="width: 366px; height: 12px;"></td>',
-            '    </tr>',
             '    <tr style="height: 49px;">',
             '    <td style="width: 362px; height: 49px;"><span ><%= current.category1.stimuli[i] %></span></td>',
             '    <td style="width: 35px; height: 49px;"></td>',
@@ -159,22 +148,22 @@ define(['./qiat.js'], function (qiatExtension) {
             '<% } %>',
             '</tbody>',
             '</table>',
-            '<p> Press the spacebar to continue reading the instructions...</p></div>'
+            '<p> אנא לחצי על מקש הרווח על מנת להמשיך...</p></div>'
         ].join('\n'),
 
         /*
          * Instruction for category practice with hints
          */
         instCategoryPracticeHinted: [
-            '<div style="font-size: 22px; color: white; text-align: left;">',
-            '<p id="instructions">As you can see, the categories have changed.<br>',
-            'The sentences for sorting have changed as well. The rules, however, are the same.</p>',
-            '<p id="instructions">Press either D or L to sort sentences to the categories on the screen.<br><br>',
-            '<font color="#FFFF00"><b>In this part of the task, each sentence will include a categorization hint to help you learn the categories. Later, this hint will not be provided.</b></font><br>',
-            'If you make an error, correct it by hitting the other key.<br>',
-            '<font color="#FFFF00">This part is for practice, and will help you learn the categories.&nbsp;<br>',
-            'Therefore, speed here is not important.</font><br>',
-            'Please press the space bar to continue...</p>',
+            '<div style="font-size: 22px; color: white; text-align:right;direction:rtl;">',
+            '<p id="instructions">כפי שניתן לראות, הקטגוריות השתנו. גם המשפטים שתצטרכי לסווג השתנו <br>',
+            'החוקים, לעומת זאת, נשארו זהים.</p>',
+            '<p id="instructions"> כאשר המשפט שייך לקטגוריה מצד ימין, לחצי על מקש הL. כאשר המשפט שייך לקטגוריה מצד שמאל, לחצי על מקש הD. <br><br>',
+            '<font color="#FFFF00"><b>בחלק זה של המשימה, יופיע בסוף כל משפט רמז שיסייע למשימת הסיווג, בכדי לעזור לך ללמוד את הקטגוריות. מאוחר יותר לא יינתן רמז זה.</b></font><br>',
+            'אם תבצעי טעות, תוכלי לתקן את הטעות על ידי לחיצה על המקש השני.<br>',
+            '<font color="#FFFF00">    חלק זה נועד לאימון על מנת ללמוד את הקטגוריות  .<br>',
+            'לכן, אין צורך לבצע אותו במהירות</font><br>',
+            'אנא לחצי על מקש הרווח על מנת להמשיך...</p>',
             '</div>'
         ].join('\n'),
 
@@ -184,11 +173,11 @@ define(['./qiat.js'], function (qiatExtension) {
          * Instruction for category practice without hints
          */
         instCategoryPractice: [
-            '<div style="font-size: 22px; color: white; text-align: left;">',
+            '<div style="font-size: 22px; color: white; text-align:right;direction:rtl;">',
             '<p id="instructions">',
-            'Sort the sentences into the same two categories again.<br>',
-            '<font color="#FFFF00">This time, hints will not be presented with the sentences.</font><br><br>',
-            'Please press the space bar to continue...',
+            'מייני שוב לפי אותן הקטגוריות.<br>',
+            '<font color="#FFFF00">הפעם, רמזים לא יוצגו עם המשפטים.</font><br><br>',
+            'אנא לחצי על מקש הרווח על מנת להמשיך...',
             '</div>'
         ].join('\n'),
 
@@ -198,37 +187,37 @@ define(['./qiat.js'], function (qiatExtension) {
          * Instruction for category practice without hints
          */
         instDouble: [
-            '<div style="font-size: 22px; text-align: left;">',
+            '<div style="font-size: 22px; text-align:right;direction:rtl;">',
             '<p id="instructions" style="color: white;">',
-            'As you can see, all four categories now appear together.<br>',
-            'The blue or yellow color of the sentences will help you identify the appropriate category for each sentence.<br>',
-            'Use the D and L keys to categorize sentences into the four groups, left and right.</p>',
-            '<p id="instructions" style="color: white;"><br><font color="#FFFF00"><b>Work as fast as you can, while making as few errors as possible.</b></font></p>',
-            '<p id="instructions" style=""><font color="#ffffff">Please press the space bar to continue...</font></p>',
+            'כפי שניתן לראות , ארבע הקטגוריות שראית קודם בנפרד, מופיעות כעת יחד<br>',
+            'הצבע הכחול או הצהוב של המשפטים יסייעו לך לזהות את הקטגוריה המתאימה.<br>',
+            ' השתמשי במקשים D וL בכדי לסווג את המשפטים לקטגוריות שמימין או לקטגוריות שמשמאל</p>',
+            '<p id="instructions" style="color: white;"><br><font color="#FFFF00"><b>מייני הכי מהר שאת יכולה, תוך ביצוע כמה שפחות טעויות.</b></font></p>',
+            '<p id="instructions" style=""><font color="#ffffff">אנא לחצי על מקש הרווח על מנת להמשיך...</font></p>',
             '</div>'
         ].join('\n'),
 
         instSwitchPractice: [
-            '<div style="font-size: 22px; color: white; text-align: left;">',
+            '<div style="font-size: 22px; color: white; text-align:right;direction:rtl;">',
             '<p id="instructions">',
-            'As you can see, there are now again only two categories, but they have switched positions.<br>',
-            'The category that was previously on the left is now on the right, and the category that was on the right is now on the left.<br>',
-            'Now you will practice this new configuration of the categories.<br>',
-            'Use the D and L keys to categorize the sentences, left and right.<br>',
-            'Correct errors by hitting the other key.<br>',
-            'Please press the space bar to continue...',
+            'כפי שניתן לראות, כעת שוב יש רק שתי קטגוריות, והן החליפו צדדים.<br>',
+            'הקטגוריה שהייתה קודם לכן בצד שמאל מופיעה כעת בימין, וזו שהייתה בצד ימין מופיעה כעת בשמאל.<br>',
+            'עתה תוכלי להתאמן בסידור החדש של הקטגוריות.<br>',
+            'השתמשי במקשי הL והD בכדי לסווג משפטים לימין או לשמאל <br>',
+            'תקני טעויות על ידי לחיצה על המקש השני.<br>',
+            'אנא לחצי על מקש הרווח על מנת להמשיך',
             '</div>'
         ].join('\n'),
 
         instSwitch: [
-            '<div style="font-size: 22px; text-align: left;">',
+            '<div style="font-size: 22px; text-align:right;direction:rtl;">',
             '<p id="instructions">',
-            'As you can see, all four categories now appear together, in the new configuration.<br><br>',
-            '<font color="#FFFF00"><b>Remember to go as fast as you can while making as few errors as possible.</b></font>',
+            'כפי שניתן לראות, ארבע הקטגוריות כעת מופיעות בסידור החדש.<br><br>',
+            '<font color="#FFFF00"><b>זכרי לפעול הכי מהר שאת יכולה, תוך ביצוע כמה שפחות טעויות.</b></font>',
             '</p>',
             '<p id="instructions">',
             '<br>',
-            '<font color="#ffffff">Please press the space bar to continue...</font>',
+            '<font color="#ffffff">אנא לחצי על מקש הרווח על מנת להמשיך...</font>',
             '</p>',
             '</div>'
           ].join('\n'),
@@ -237,3 +226,4 @@ define(['./qiat.js'], function (qiatExtension) {
 
     //NOTE: when you test the task, remember that pressing ESC and then ENTER skips blocks.
 });
+
