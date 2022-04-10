@@ -1,4 +1,4 @@
-library(tidyverse)
+library(tidyverse, hash)
 
 # Analyze qiat/iat data
 #
@@ -16,6 +16,10 @@ library(tidyverse)
 # Criteria for excluding trials from analysis
 # @param analyze_max_latency (int) maximum valid latency dflt:10000
 # @param analyze_min_latency (int) minimum valid latency dflt:400
+
+# PAIRED_EVENS variable is defined to divide evens and odds by pairs:  
+# 1 is even | 2&3 are odds | 4&5 are evens | 6&7 are odds ... and so on. 
+PAIRED_EVENS = c(0,1)
 
 qiat.analyze = function (
   data,
@@ -35,10 +39,30 @@ qiat.analyze = function (
   if (length(cong) != length(incong)) stop('cong and incong must be the same length')
   # @TODO: error if missing columns from data
   
+  # PAIRED_EVENS variable is defined to divide evens and odds by pairs  
+  # 1 is even | 2&3 are odds | 4&5 are evens | 6&7 are odds ... and so on 
   trials.tidy = data %>%
     mutate(isEven = row_number() %% 2) %>%
+    mutate(isPairedEven = (row_number() %% 4) %in% PAIRED_EVENS) %>%
     group_by(id) %>% mutate(trialN = row_number()) %>% ungroup() %>%
     group_by(id,block) %>% mutate(trialNBlock = row_number()) %>% ungroup()
+  
+  # left and rights are also a new way of calculating split half reliability. 
+  # each subject gets 20 trial assign to left randomly and the other 20 are
+  # assign to right, and the reliability would be calculated based on them.
+  
+  random_lefts = hash()
+  for (id in unique(trials.tidy$id)) {
+    random_lefts[id] = sample(c(0:19), size = 10, replace = F)
+  }
+  
+  isLeft = c()
+  for (idx in c(1:length(trials.tidy$id))) {
+    id = trials.tidy$id[idx]
+    isLeft[idx] = (trials.tidy$trialNBlock[idx] %% 20) %in% random_lefts[[id]]
+  }
+  
+  trials.tidy$isLeft = isLeft
   
   participants.validity = trials.tidy %>%
     group_by(id) %>%
@@ -95,12 +119,20 @@ qiat.analyze = function (
   dscores.all = dscore(trials.good)
   dscores.even = dscore(trials.good %>% filter(isEven == 0))
   dscores.odd = dscore(trials.good %>% filter(isEven == 1))
+  dscores.paired.even = dscore(trials.good %>% filter(isPairedEven == 1))
+  dscores.paired.odd = dscore(trials.good %>% filter(isPairedEven == 0))
+  dscores.random.lefts = dscore(trials.good %>% filter(isLeft == 1))
+  dscores.random.rights = dscore(trials.good %>% filter(isLeft == 0))
   
     list(
       trials = trials.tidy,
       dscores.all = dscores.all,
       dscores.even = dscores.even,
       dscores.odd = dscores.odd,
+      dscores.paired.even = dscores.paired.even,
+      dscores.paired.odd = dscores.paired.odd,
+      dscores.random.lefts = dscores.random.lefts,
+      dscores.random.rights = dscores.random.rights,
       participants = participants.validity %>%
         left_join(dscores.all %>% select(id,condition, dscore), by = 'id') %>%
         left_join(dscores.even %>% select(id,dscore_even = dscore), by = 'id') %>%
