@@ -121,7 +121,7 @@ qiat.analyze = function (
   dscores.odd = dscore(trials.good %>% filter(isEven == 1))
   dscores.paired.even = dscore(trials.good %>% filter(isPairedEven == 1))
   dscores.paired.odd = dscore(trials.good %>% filter(isPairedEven == 0))
-  dscores.random.lefts = dscore(trials.good %>% filter(isLeft == 1))
+  dscores.random.lefts = dscore(trials.good %>% filter(isLeft == 1)) 
   dscores.random.rights = dscore(trials.good %>% filter(isLeft == 0))
   
     list(
@@ -136,6 +136,10 @@ qiat.analyze = function (
       participants = participants.validity %>%
         left_join(dscores.all %>% select(id,condition, dscore), by = 'id') %>%
         left_join(dscores.even %>% select(id,dscore_even = dscore), by = 'id') %>%
-        left_join(dscores.odd %>% select(id,dscore_odd = dscore), by = 'id')
+        left_join(dscores.odd %>% select(id,dscore_odd = dscore), by = 'id') %>%
+        left_join(dscores.paired.even %>% select(id,dscore_paired_even = dscore), by = 'id') %>%
+        left_join(dscores.paired.odd %>% select(id,dscore_paired_odd = dscore), by = 'id') %>%
+        left_join(dscores.random.lefts %>% select(id,dscore_lefts = dscore), by = 'id') %>%
+        left_join(dscores.random.rights %>% select(id,dscore_rights = dscore), by = 'id') 
     )
 }
